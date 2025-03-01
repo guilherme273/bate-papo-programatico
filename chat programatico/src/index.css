@@ -1,2 +1,26 @@
 @import "tailwindcss";
 
+@layer utilities {
+  /* Estiliza a barra de rolagem */
+  .scrollbar::-webkit-scrollbar {
+    width: 8px; /* Largura da barra (horizontal) */
+    height: 8px; /* Altura da barra (vertical) */
+  }
+
+  /* Cor do trilho (fundo da barra de rolagem) */
+  .scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  /* Cor do "thumb" (a parte que se move) */
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #4a90e2;
+    border-radius: 10px;
+  }
+
+  /* Cor do thumb ao passar o mouse */
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #357abd;
+  }
+}

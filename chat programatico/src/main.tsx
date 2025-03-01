@@ -16,7 +16,7 @@ const router = createBrowserRouter([
     element: <ListRooms />,
   },
   {
-    path: "/room/:RoomName",
+    path: "/room/:RoomName/:NikName",
     element: <Room />,
   },
 ]);
