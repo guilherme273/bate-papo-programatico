@@ -1,8 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { emojiList } from "../../ArrayRooms";
 
 interface DATA {
   nickName: string;
+  avatar: string;
 }
 
 const Home = () => {
@@ -16,7 +18,7 @@ const Home = () => {
 
   const submit = (data: DATA) => {
     if (data.nickName !== "") {
-      navigate(`/list-rooms/${data.nickName}`);
+      navigate(`/list-rooms/${data.nickName}/${data.avatar}`);
     }
 
     reset();
@@ -39,12 +41,35 @@ const Home = () => {
                 <input
                   id="nickName"
                   type="text"
-                  className=" p-[5px] bg-slate-950 w-[100%] border border-slate-500 rounded-2xl text-slate-50"
+                  className=" p-[5px] bg-gray-800 border border-gray-600 w-[100%] border  rounded-2xl text-slate-50"
                   {...register("nickName", { required: true })}
                 />
+
                 {errors?.nickName?.type === "required" && (
                   <p className="text-[11px] text-red-600/90">
                     Apelido Obrigatório
+                  </p>
+                )}
+                <label className=" text-slate-50" htmlFor="">
+                  Escolha um Avatar
+                </label>
+                <select
+                  className="w-full p-1 text-sm text-white bg-gray-800 border border-gray-600 rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+                  id="emoji-select"
+                  {...register("avatar", { required: true })}
+                >
+                  <option value="" disabled selected></option>
+                  {emojiList.map((emoji, index) => {
+                    return (
+                      <option key={index} value={emoji}>
+                        {emoji}
+                      </option>
+                    );
+                  })}
+                </select>
+                {errors?.avatar?.type === "required" && (
+                  <p className="text-[11px] text-red-600/90">
+                    Avatar Obrigatório
                   </p>
                 )}
               </div>

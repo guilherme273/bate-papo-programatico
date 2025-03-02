@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrayRooms } from "../../ArrayRooms";
 
 const ListRooms = () => {
-  const { nickName } = useParams();
+  const { nickName, avatar } = useParams();
   const [socket] = useState(Socket);
   const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ const ListRooms = () => {
     e.preventDefault();
     const RoomName = room.title;
     console.log(RoomName);
-    navigate(`/room/${RoomName}/${nickName}`);
+    navigate(`/room/${RoomName}/${nickName}/${avatar}`);
   };
 
   return (
@@ -29,7 +29,8 @@ const ListRooms = () => {
                 <h5 className="text-2xl text-slate-50">{room.title}</h5>
                 <div className="w-[95%] h-[80%] bottom-0 absolute rounded-2xl flex justify-around flex-col items-center">
                   <div
-                    className={`w-[100%] h-[80%] bg-[url(${room.urlIMG})] bg-cover bg-center rounded-2xl`}
+                    className="w-[100%] h-[80%] bg-cover bg-center rounded-2xl"
+                    style={{ backgroundImage: `url(${room.urlIMG})` }}
                   ></div>
                   <button
                     onClick={(e) => joinRomm(e, room)}
