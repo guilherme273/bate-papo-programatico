@@ -1,35 +1,3 @@
-interface InterArrayRooms {
-  title: string;
-  urlIMG: string;
-}
-
-export const ArrayRooms: InterArrayRooms[] = [
-  {
-    title: "Falando de Java",
-    urlIMG: "/img/java.jpg",
-  },
-  {
-    title: "Discução Sobre Ia",
-    urlIMG: "/img/java.jpg",
-  },
-  {
-    title: "Procuro Por Um Freela",
-    urlIMG: "/img/java.jpg",
-  },
-  {
-    title: "NodeJS",
-    urlIMG: "/img/java.jpg",
-  },
-  {
-    title: "Type Script",
-    urlIMG: "/img/java.jpg",
-  },
-  {
-    title: "Compartilhando Bugs",
-    urlIMG: "/img/java.jpg",
-  },
-];
-
 export const emojiList = [
   "😀",
   "😃",

@@ -1,20 +1,30 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { Socket } from "../../io";
-import { useState } from "react";
-import { ArrayRooms } from "../../ArrayRooms";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useSocket } from "../../contexts/WebSocketContext.js";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useEffect, useState } from "react";
 
 const ListRooms = () => {
-  const { nickName, avatar } = useParams();
-  const [socket] = useState(Socket);
+  const { ArrayRooms } = useSocket();
   const navigate = useNavigate();
+  const location = useLocation();
+  const toastFy = location.state || {};
 
   const joinRomm = (e, room) => {
     e.preventDefault();
-    const RoomName = room.title;
-    console.log(RoomName);
-    navigate(`/room/${RoomName}/${nickName}/${avatar}`);
+    navigate(`/room/${room.title}`);
   };
 
+  useEffect(() => {
+    if (toastFy?.showToast) {
+      toast.success(toastFy.msg, {
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeButton: true,
+        pauseOnHover: true,
+      });
+    }
+  }, [toastFy]);
   return (
     <>
       <section className="w-[100%] h-[100%] bg-slate-500 flex justify-start items-center flex-col">
@@ -44,6 +54,7 @@ const ListRooms = () => {
           })}
         </div>
       </section>
+      <ToastContainer />
     </>
   );
 };

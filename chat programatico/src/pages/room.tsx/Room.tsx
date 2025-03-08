@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Socket } from "../../io";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Mic, Search, SendHorizontal, X } from "lucide-react";
-import { ArrayRooms } from "../../ArrayRooms";
 import { useForm } from "react-hook-form";
+import { useSocket } from "../../contexts/WebSocketContext.js";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 interface MSGS {
   content: string;
@@ -14,10 +15,10 @@ interface MSGS {
 
 function Room() {
   const navigate = useNavigate();
-  const { RoomName, NikName, avatar } = useParams();
+  const { socket, avatar, NickName, setRoomName, ArrayRooms } = useSocket();
+  const { RoomName } = useParams();
   const [stateRoomName, setStateRoomName] = useState(RoomName);
   const [msgsRoom, setMsgsRoom] = useState<MSGS[]>([]);
-  const [socket] = useState(Socket);
 
   const {
     register,
@@ -27,50 +28,74 @@ function Room() {
   } = useForm();
 
   const Room = ArrayRooms.filter((room) => room.title === RoomName);
+  const atualizarMSGS = (msgsRoom) => {
+    setMsgsRoom(msgsRoom);
+  };
 
+  const messageListener = (
+    msg: string,
+    NickName: string,
+    avatar: string,
+    id: string
+  ) => {
+    const newMsg: MSGS = {
+      content: msg,
+      remetente: NickName,
+      avatar: avatar,
+      id: id, // ID único para cada mensagem
+    };
+
+    setMsgsRoom((prev) => [...prev, newMsg]);
+  };
   useEffect(() => {
-    // Verificar se estamos saindo da sala anterior antes de entrar em uma nova
-    if (stateRoomName !== RoomName) {
-      socket.emit("leaveRoom", stateRoomName); // Sai da sala atual
-      setMsgsRoom([]); // Limpa as mensagens ao trocar de sala
+    if (!RoomName) return;
+
+    // Se a sala mudou, sair da sala anterior
+    if (stateRoomName && stateRoomName !== RoomName) {
+      socket.emit("leaveRoom", stateRoomName, NickName);
+      setMsgsRoom([]);
+      setStateRoomName(RoomName);
     }
 
-    socket.emit("joinRoom", RoomName); // Entra na nova sala
+    socket.emit("joinRoom", RoomName, NickName);
+    socket.on("joinRoom", atualizarMSGS);
+    socket.on("leaveRoom", atualizarMSGS);
 
-    const messageListener = (msg: string, nikName: string, avatar: string) => {
-      const newMsg: MSGS = {
-        content: msg,
-        remetente: nikName,
-        avatar: avatar,
-        id: Date.now().toString(), // ID único para cada mensagem
-      };
-
-      setMsgsRoom((prev) => [...prev, newMsg]);
-    };
-
+    // Adicionar ouvintes para eventos
     socket.on("message", messageListener);
 
-    // Função de limpeza para remover o listener ao trocar de sala ou desmontar
     return () => {
+      // Limpar ouvintes ao desmontar o componente ou trocar de sala
       socket.off("message", messageListener);
+      socket.off("joinRoom", atualizarMSGS);
+      socket.off("leaveRoom", atualizarMSGS);
     };
-  }, [RoomName, NikName, socket]);
+  }, [RoomName]);
 
   const navegar = (e, room) => {
     e.preventDefault();
-    navigate(`/room/${room.title}/${NikName}/${avatar}`);
+    navigate(`/room/${room.title}`);
   };
 
   const sendMsg = (data) => {
-    socket.emit("message", RoomName, data.msg, NikName, avatar);
+    const id = Date.now().toString();
+    socket.emit("message", RoomName, data.msg, NickName, avatar, id);
     reset();
+  };
+
+  const sair = () => {
+    socket.emit("leaveRoom", stateRoomName, NickName);
+    navigate("/list-rooms");
   };
 
   return (
     <>
       <section className="w-[100%] h-[100%] flex flex-row bg-gray-900">
         <section className="w-[30%] h-screen left-0 bg-gray-950 flex flex-col justify-center items-center gap-4">
-          <ArrowLeft className="absolute top-2 left-2 text-slate-50 hover:cursor-pointer" />
+          <ArrowLeft
+            onClick={sair}
+            className="absolute top-2 left-2 text-slate-50 hover:cursor-pointer"
+          />
           <h5 className="text-slate-50">Trocar De Sala</h5>
           <div className="flex flex-row justify-center items-center w-[100%]">
             <Search className="w-[14%] h-[32px] text-slate-50" />
@@ -105,28 +130,41 @@ function Room() {
           <div className="w-[100%] h-[80%] flex flex-nowrap flex-col overflow-y-scroll scrollbar p-5">
             <ul className="flex flex-col gap-2">
               {msgsRoom.map((msg) => (
-                <li
-                  key={msg.id}
-                  className={`flex flex-col flex-wrap gap-1 p-4 bg-gray-700/30 rounded-3xl ${
-                    msg.remetente === NikName ? "items-end text-right" : ""
-                  }`}
-                >
-                  <div className="flex flex-row items-center gap-1">
+                <>
+                  {msg.remetente === "SYSTEM" ? (
                     <div
-                      className={`flex justify-center items-center w-[45px] h-[45px] rounded-full text-[35px] ${
-                        msg.remetente === NikName
-                          ? "bg-blue-500"
-                          : "bg-gray-500"
+                      className="flex items-center justify-center"
+                      key={msg.id}
+                    >
+                      <p className="p-1 text-xs text-slate-50 bg-blue-400/10 rounded-4xl">
+                        {msg.content}
+                      </p>
+                    </div>
+                  ) : (
+                    <li
+                      key={msg.id}
+                      className={`flex flex-col flex-wrap gap-1 p-4 bg-gray-700/30 rounded-3xl ${
+                        msg.remetente === NickName ? "items-end text-right" : ""
                       }`}
                     >
-                      {msg.avatar}
-                    </div>
-                    <strong>
-                      {msg.remetente === NikName ? "Você" : msg.remetente} Diz:
-                    </strong>
-                  </div>
-                  <p className="text-slate-50">{msg.content}</p>
-                </li>
+                      <div className="flex flex-row items-center gap-1">
+                        <div
+                          className={`flex justify-center items-center w-[45px] h-[45px] rounded-full text-[35px] ${
+                            msg.remetente === NickName
+                              ? "bg-blue-500"
+                              : "bg-gray-500"
+                          }`}
+                        >
+                          {msg.avatar}
+                        </div>
+                        <strong>
+                          {msg.remetente === NickName ? "Você" : msg.remetente}:
+                        </strong>
+                      </div>
+                      <p className="text-slate-50">{msg.content}</p>
+                    </li>
+                  )}
+                </>
               ))}
             </ul>
           </div>
@@ -153,6 +191,7 @@ function Room() {
           </div>
         </section>
       </section>
+      <ToastContainer />
     </>
   );
 }
