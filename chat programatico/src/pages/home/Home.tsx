@@ -4,13 +4,14 @@ import { useSocket } from "../../contexts/WebSocketContext.js";
 import { Navigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
 interface DATA {
   nickName: string;
   avatar: string;
 }
 
 const Home = () => {
-  const { logar, logado, NickName } = useSocket();
+  const { logar, logado, NickName, isLogaded } = useSocket();
 
   const {
     register,
@@ -26,6 +27,11 @@ const Home = () => {
 
     reset();
   };
+
+  useEffect(() => {
+    isLogaded();
+  });
+
   if (logado) {
     return (
       <Navigate

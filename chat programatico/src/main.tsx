@@ -7,6 +7,7 @@ import Home from "./pages/home/Home.tsx";
 import { SocketProvider } from "./contexts/WebSocketContext.js";
 import ListRooms from "./pages/ListRooms/ListRooms.tsx";
 import Room from "./pages/room.tsx/Room.tsx";
+import { IsLogaded } from "./PrivatesRoutes/isLogaded.tsx";
 
 const router = createBrowserRouter([
   {
@@ -15,11 +16,23 @@ const router = createBrowserRouter([
   },
   {
     path: "/list-rooms",
-    element: <ListRooms />,
+    element: <IsLogaded />,
+    children: [
+      {
+        path: "",
+        element: <ListRooms />,
+      },
+    ],
   },
   {
     path: "/room/:RoomName",
-    element: <Room />,
+    element: <IsLogaded />,
+    children: [
+      {
+        path: "",
+        element: <Room />,
+      },
+    ],
   },
 ]);
 

@@ -1,25 +1,48 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { io } from "socket.io-client";
 
 const WebSocketContext = createContext(null);
-
-const socket = io("http://localhost:3000", {
-  transports: ["websocket"],
-  reconnectionAttempts: 0,
-});
 
 export const SocketProvider = ({ children }) => {
   const [NickName, setNickName] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const [logado, setLogado] = useState(false);
+  const [socket, setSocket] = useState();
 
   const logar = (data) => {
     if (data.nickName && data.avatar) {
       setNickName(data.nickName);
       setAvatar(data.avatar);
+      localStorage.setItem("@nickName:", data.nickName);
+      localStorage.setItem("@avatar:", data.avatar);
       setLogado(true);
     }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("@nickName:");
+    localStorage.removeItem("@avatar:");
+    setLogado(false);
+    setNickName(null);
+    setAvatar(null);
+    window.location.reload();
+  };
+
+  const isLogaded = () => {
+    const nickName = localStorage.getItem("@nickName:");
+    const avatar = localStorage.getItem("@avatar:");
+    if (!nickName || !avatar) {
+      localStorage.removeItem("@nickName:");
+      localStorage.removeItem("@avatar:");
+      setLogado(false);
+      setNickName(null);
+      setAvatar(null);
+      return;
+    }
+    setLogado(true);
+    setNickName(nickName);
+    setAvatar(avatar);
+    return;
   };
 
   useEffect(() => {
@@ -61,8 +84,10 @@ export const SocketProvider = ({ children }) => {
         NickName,
         avatar,
         logado,
-
+        isLogaded,
         ArrayRooms,
+        setSocket,
+        logout,
       }}
     >
       {children}

@@ -1,0 +1,162 @@
+.section-page-room {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  background-color: #1a1a1a;
+}
+
+.section-menu-rooms {
+  width: 30%;
+  height: 100%;
+  left: 0;
+  background-color: #030311;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.arrow-left {
+  position: absolute;
+  top: 1.5%;
+  left: 1%;
+  color: rgb(216, 237, 255);
+}
+
+.div-search-rooms {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.input-search-rooms {
+  width: 80%;
+  padding: 3px;
+  border-radius: 10px;
+
+  outline: none;
+}
+.input-search-rooms:focus {
+  width: 80%;
+  padding: 3px;
+  border-radius: 10px;
+
+  outline: none;
+}
+
+.div-rooms-list {
+  width: 100%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.div-room {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: baseline;
+  height: 70px;
+  width: 100%;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.062);
+}
+.div-room:hover {
+  cursor: pointer;
+}
+
+.room-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  background-size: cover;
+  background-position: center;
+  margin-left: 7px;
+}
+
+.section-chat {
+  width: 70%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.div-header-chat {
+  width: 100%;
+  height: 12%;
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.div-contenct-chat {
+  width: 100%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.div-send-msg {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+
+  height: auto;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 10px;
+}
+.button-mobile-header {
+  display: none;
+}
+
+@media (min-width: 1px) and (max-width: 925px) {
+  .button-mobile-header {
+    display: inline;
+    top: 1.5%;
+    right: 1.5%;
+    position: fixed;
+    z-index: 200;
+  }
+
+  .section-menu-rooms {
+    display: none;
+  }
+
+  .section-chat {
+    width: 100%;
+  }
+
+  .section-menu-rooms-mobile {
+    width: 70%;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    background-color: #030311;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    z-index: 200;
+  }
+}

@@ -3,9 +3,11 @@ import { useSocket } from "../../contexts/WebSocketContext.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
+import ButtonLogout from "../../components/buttonRetunrLastPage/ButtonLogout.js";
+import { io } from "socket.io-client";
 
 const ListRooms = () => {
-  const { ArrayRooms } = useSocket();
+  const { ArrayRooms, setSocket, socket } = useSocket();
   const navigate = useNavigate();
   const location = useLocation();
   const toastFy = location.state || {};
@@ -24,10 +26,19 @@ const ListRooms = () => {
         pauseOnHover: true,
       });
     }
-  }, [toastFy]);
+
+    if (!socket) {
+      const Newsocket = io("http://localhost:3000", {
+        transports: ["websocket"],
+        reconnectionAttempts: 0,
+      });
+      setSocket(Newsocket);
+    }
+  }, []);
   return (
     <>
       <section className="w-[100%] h-[100%] bg-slate-500 flex justify-start items-center flex-col">
+        <ButtonLogout />
         <h5 className="m-10 text-3xl text-slate-50">Salas Disponíveis</h5>
         <div className="w-[95%] h-[80%] bottom-0 flex flex-row gap-4 flex-wrap justify-center">
           {ArrayRooms.map((room, i) => {
