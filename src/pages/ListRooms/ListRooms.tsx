@@ -1,18 +1,18 @@
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSocket } from "../../contexts/WebSocketContext.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ButtonLogout from "../../components/buttonRetunrLastPage/ButtonLogout.js";
 import { io } from "socket.io-client";
-
+import { ROOMS } from "../../contexts/WebSocketContext.js";
 const ListRooms = () => {
   const { ArrayRooms, setSocket, socket } = useSocket();
   const navigate = useNavigate();
   const location = useLocation();
   const toastFy = location.state || {};
 
-  const joinRomm = (e, room) => {
+  const joinRomm = (e: React.MouseEvent<HTMLButtonElement>, room: ROOMS) => {
     e.preventDefault();
     navigate(`/room/${room.title}`);
   };
@@ -41,7 +41,7 @@ const ListRooms = () => {
         <ButtonLogout />
         <h5 className="m-10 text-3xl text-slate-50">Salas Disponíveis</h5>
         <div className="w-[95%] h-[80%] bottom-0 flex flex-row gap-4 flex-wrap justify-center">
-          {ArrayRooms.map((room, i) => {
+          {ArrayRooms.map((room: ROOMS, i: number) => {
             return (
               <div
                 key={i}

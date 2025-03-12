@@ -1,15 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  AlignJustify,
-  ArrowLeft,
-  Mic,
-  Search,
-  SendHorizontal,
-  X,
-} from "lucide-react";
+import { AlignJustify, ArrowLeft, Search, SendHorizontal } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useSocket } from "../../contexts/WebSocketContext.js";
+import { ROOMS, useSocket } from "../../contexts/WebSocketContext.js";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import "./RoomStyle.css";
@@ -22,20 +15,15 @@ interface MSGS {
 
 function Room() {
   const navigate = useNavigate();
-  const { socket, avatar, NickName, setRoomName, ArrayRooms } = useSocket();
+  const { socket, avatar, NickName, ArrayRooms } = useSocket();
   const { RoomName } = useParams();
   const [stateRoomName, setStateRoomName] = useState(RoomName);
   const [msgsRoom, setMsgsRoom] = useState<MSGS[]>([]);
   const [showMObiMenu, setShowMObileMenu] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
-  const Room = ArrayRooms.filter((room) => room.title === RoomName);
-  const atualizarMSGS = (msgsRoom) => {
+  const Room = ArrayRooms.filter((room: ROOMS) => room.title === RoomName);
+  const atualizarMSGS = (msgsRoom: MSGS[]) => {
     setMsgsRoom(msgsRoom);
   };
 
@@ -79,12 +67,12 @@ function Room() {
     };
   }, [RoomName]);
 
-  const navegar = (e, room) => {
+  const navegar = (e: React.MouseEvent<HTMLButtonElement>, room: ROOMS) => {
     e.preventDefault();
     navigate(`/room/${room.title}`);
   };
 
-  const sendMsg = (data) => {
+  const sendMsg = (data: { msg: string }) => {
     const id = Date.now().toString();
     socket.emit("message", RoomName, data.msg, NickName, avatar, id);
     reset();

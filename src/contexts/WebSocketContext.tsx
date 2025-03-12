@@ -10,6 +10,11 @@ interface SocketProviderProps {
   children: ReactNode;
 }
 
+export interface ROOMS {
+  title: string;
+  urlIMG: string;
+}
+
 const WebSocketContext = createContext<any>(null);
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
@@ -57,7 +62,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     console.log(NickName, avatar, logado);
   }, [logado]);
 
-  const ArrayRooms = [
+  const ArrayRooms: ROOMS[] = [
     { title: "Falando de Java", urlIMG: "/img/java.jpg" },
     { title: "Discução Sobre IA", urlIMG: "/img/java.jpg" },
     { title: "Procuro Por Um Freela", urlIMG: "/img/java.jpg" },
