@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AlignJustify, ArrowLeft, Search, SendHorizontal } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { ROOMS, useSocket } from "../../contexts/WebSocketContext.js";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
@@ -11,6 +11,9 @@ interface MSGS {
   remetente: string | undefined;
   avatar: string | undefined;
   id: string;
+}
+interface FormData {
+  msg: string;
 }
 
 function Room() {
@@ -72,7 +75,8 @@ function Room() {
     navigate(`/room/${room.title}`);
   };
 
-  const sendMsg = (data: { msg: string }) => {
+  const sendMsg: SubmitHandler<FormData> = (data) => {
+    if (!socket) return; // Garante que o socket existe antes de enviar a mensagem
     const id = Date.now().toString();
     socket.emit("message", RoomName, data.msg, NickName, avatar, id);
     reset();
@@ -109,7 +113,7 @@ function Room() {
             />
           </div>
           <div className="div-rooms-list">
-            {ArrayRooms.map((room, i) => (
+            {ArrayRooms.map((room: ROOMS, i: number) => (
               <button className="" onClick={(e) => navegar(e, room)} key={i}>
                 <div className="flex flex-row items-center gap-20 div-room justify-arround hover:cursor-pointer hover:bg-gray-900">
                   <div
