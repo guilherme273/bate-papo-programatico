@@ -23,7 +23,7 @@ function Room() {
   const [stateRoomName, setStateRoomName] = useState(RoomName);
   const [msgsRoom, setMsgsRoom] = useState<MSGS[]>([]);
   const [showMObiMenu, setShowMObileMenu] = useState(false);
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm<FormData>();
 
   const Room = ArrayRooms.filter((room: ROOMS) => room.title === RoomName);
   const atualizarMSGS = (msgsRoom: MSGS[]) => {
