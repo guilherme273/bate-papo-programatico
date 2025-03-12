@@ -28,7 +28,7 @@ const ListRooms = () => {
     }
 
     if (!socket) {
-      const Newsocket = io("http://localhost:3000", {
+      const Newsocket = io("https://mybackend.eco.br/", {
         transports: ["websocket"],
         reconnectionAttempts: 0,
       });
