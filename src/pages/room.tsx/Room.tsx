@@ -76,7 +76,7 @@ function Room() {
   };
 
   const sendMsg: SubmitHandler<FormData> = (data) => {
-    if (!socket) return; // Garante que o socket existe antes de enviar a mensagem
+    if (!socket) return; // Garante que o socket está definido antes de enviar a mensagem
     const id = Date.now().toString();
     socket.emit("message", RoomName, data.msg, NickName, avatar, id);
     reset();
@@ -186,8 +186,8 @@ function Room() {
                 className="w-[85%] min-h-[30px] max-h-[200px] p-2 text-slate-50 bg-gray-700 rounded-sm outline-none ring-1 ring-gray-600 focus:ring-1 focus:ring-blue-500 transition-shadow resize-none overflow-hidden"
                 rows="1"
                 onInput={(e) => {
-                  e.target.style.height = "auto"; // Resetar altura antes de calcular
-                  e.target.style.height = e.target.scrollHeight + "px"; // Ajustar para altura do conteúdo
+                  e.target.style.height = "auto";
+                  e.target.style.height = e.target.scrollHeight + "px";
                 }}
                 {...register("msg", { required: true })}
               ></textarea>
