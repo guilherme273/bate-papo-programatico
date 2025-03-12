@@ -1,15 +1,24 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 
-const WebSocketContext = createContext(null);
+interface SocketProviderProps {
+  children: ReactNode;
+}
 
-export const SocketProvider = ({ children }) => {
-  const [NickName, setNickName] = useState(null);
-  const [avatar, setAvatar] = useState(null);
-  const [logado, setLogado] = useState(false);
-  const [socket, setSocket] = useState();
+const WebSocketContext = createContext<any>(null);
 
-  const logar = (data) => {
+export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
+  const [NickName, setNickName] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState<string | null>(null);
+  const [logado, setLogado] = useState<boolean>(false);
+  const [socket, setSocket] = useState<any>(null);
+
+  const logar = (data: { nickName: string; avatar: string }) => {
     if (data.nickName && data.avatar) {
       setNickName(data.nickName);
       setAvatar(data.avatar);
@@ -42,7 +51,6 @@ export const SocketProvider = ({ children }) => {
     setLogado(true);
     setNickName(nickName);
     setAvatar(avatar);
-    return;
   };
 
   useEffect(() => {
@@ -50,30 +58,12 @@ export const SocketProvider = ({ children }) => {
   }, [logado]);
 
   const ArrayRooms = [
-    {
-      title: "Falando de Java",
-      urlIMG: "/img/java.jpg",
-    },
-    {
-      title: "Discução Sobre Ia",
-      urlIMG: "/img/java.jpg",
-    },
-    {
-      title: "Procuro Por Um Freela",
-      urlIMG: "/img/java.jpg",
-    },
-    {
-      title: "NodeJS",
-      urlIMG: "/img/java.jpg",
-    },
-    {
-      title: "Type Script",
-      urlIMG: "/img/java.jpg",
-    },
-    {
-      title: "Compartilhando Bugs",
-      urlIMG: "/img/java.jpg",
-    },
+    { title: "Falando de Java", urlIMG: "/img/java.jpg" },
+    { title: "Discução Sobre IA", urlIMG: "/img/java.jpg" },
+    { title: "Procuro Por Um Freela", urlIMG: "/img/java.jpg" },
+    { title: "NodeJS", urlIMG: "/img/java.jpg" },
+    { title: "TypeScript", urlIMG: "/img/java.jpg" },
+    { title: "Compartilhando Bugs", urlIMG: "/img/java.jpg" },
   ];
 
   return (
