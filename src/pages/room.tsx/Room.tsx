@@ -184,13 +184,15 @@ function Room() {
             <form className="form" onSubmit={handleSubmit(sendMsg)}>
               <textarea
                 className="w-[85%] min-h-[30px] max-h-[200px] p-2 text-slate-50 bg-gray-700 rounded-sm outline-none ring-1 ring-gray-600 focus:ring-1 focus:ring-blue-500 transition-shadow resize-none overflow-hidden"
-                rows="1"
-                onInput={(e) => {
-                  e.target.style.height = "auto";
-                  e.target.style.height = e.target.scrollHeight + "px";
+                rows={1}
+                onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
+                  const target = e.target as HTMLTextAreaElement; // Garantir que é um <textarea>
+                  target.style.height = "auto";
+                  target.style.height = `${target.scrollHeight}px`; // Corrige a atribuição de string para número
                 }}
                 {...register("msg", { required: true })}
-              ></textarea>
+              />
+
               <button type="submit" className="hover:cursor-pointer">
                 <SendHorizontal className=" text-slate-50" />
               </button>
