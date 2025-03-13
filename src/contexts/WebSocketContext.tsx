@@ -64,11 +64,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   const ArrayRooms: ROOMS[] = [
     { title: "Falando de Java", urlIMG: "/img/java.jpg" },
-    { title: "Discução Sobre IA", urlIMG: "/img/java.jpg" },
+    { title: "Discussão Sobre Ia", urlIMG: "/img/java.jpg" },
     { title: "Procuro Por Um Freela", urlIMG: "/img/java.jpg" },
     { title: "NodeJS", urlIMG: "/img/java.jpg" },
-    { title: "TypeScript", urlIMG: "/img/java.jpg" },
-    { title: "Compartilhando Bugs", urlIMG: "/img/java.jpg" },
+    { title: "Type Script", urlIMG: "/img/java.jpg" },
+    { title: "Bugs e soluções", urlIMG: "/img/java.jpg" },
   ];
 
   return (

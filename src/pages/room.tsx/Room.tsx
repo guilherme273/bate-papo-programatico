@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { AlignJustify, ArrowLeft, Search, SendHorizontal } from "lucide-react";
+import { AlignJustify, ArrowLeft, SendHorizontal } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ROOMS, useSocket } from "../../contexts/WebSocketContext.js";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,12 +22,31 @@ function Room() {
   const { RoomName } = useParams();
   const [stateRoomName, setStateRoomName] = useState(RoomName);
   const [msgsRoom, setMsgsRoom] = useState<MSGS[]>([]);
-  const [showMObiMenu, setShowMObileMenu] = useState(false);
+  const [showMObileMenu, setShowMObileMenu] = useState(false);
   const { register, handleSubmit, reset } = useForm<FormData>();
-
+  const valueInputRef = useRef<HTMLInputElement>(null);
+  const [ArrayRoomsSearch, setArrayRoomsSearch] = useState(ArrayRooms);
+  const [inputValue, setInputValue] = useState("");
   const Room = ArrayRooms.filter((room: ROOMS) => room.title === RoomName);
+  const chatRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [msgsRoom]);
   const atualizarMSGS = (msgsRoom: MSGS[]) => {
     setMsgsRoom(msgsRoom);
+  };
+
+  const verificaOndeFoi = (e: React.MouseEvent) => {
+    if (
+      showMObileMenu && // Apenas fecha se o menu estiver aberto
+      e.target instanceof HTMLElement &&
+      !e.target.closest(".section-menu-rooms-mobile")
+    ) {
+      setShowMObileMenu(false);
+    }
   };
 
   const messageListener = (
@@ -89,33 +108,42 @@ function Room() {
 
   return (
     <>
-      <section className="section-page-room bg-slate-900">
+      <section
+        onClick={(e) => verificaOndeFoi(e)}
+        className="section-page-room bg-slate-900 "
+        id="foraDoContainer"
+      >
         <button
-          onClick={() => setShowMObileMenu(!showMObiMenu)}
+          onClick={() => setShowMObileMenu(!showMObileMenu)}
           className="button-mobile-header"
         >
           <AlignJustify className="text-slate-50" size={30} />
         </button>
         <section
           className={
-            showMObiMenu
+            !showMObileMenu
               ? "section-menu-rooms bg-slate-950"
               : "section-menu-rooms-mobile bg-slate-950"
           }
         >
-          <ArrowLeft onClick={sair} className="arrow-left text-slate-50" />
+          <ArrowLeft
+            onClick={sair}
+            className="cursor-pointer arrow-left text-slate-50"
+          />
           <h5 className="text-slate-50">Trocar De Sala</h5>
           <div className="div-search-rooms">
-            <Search className="text-slate-50" />
             <input
               type="text"
               className="bg-gray-700 input-search-rooms text-slate-50 ring-1 ring-gray-600 focus:ring-1 focus:ring-blue-500"
+              ref={valueInputRef}
+              onChange={filtrarBusca}
+              value={inputValue}
             />
           </div>
           <div className="div-rooms-list">
-            {ArrayRooms.map((room: ROOMS, i: number) => (
+            {ArrayRoomsSearch.map((room: ROOMS, i: number) => (
               <button className="" onClick={(e) => navegar(e, room)} key={i}>
-                <div className="flex flex-row items-center gap-20 div-room justify-arround hover:cursor-pointer hover:bg-gray-900">
+                <div className="div-room hover:cursor-pointer hover:bg-gray-900">
                   <div
                     className="room-image"
                     style={{ backgroundImage: `url(${room.urlIMG})` }}
@@ -135,7 +163,10 @@ function Room() {
             ></div>
             <h5 className="text-slate-50">{Room[0].title}</h5>
           </div>
-          <div className="overflow-y-scroll div-contenct-chat scrollbar">
+          <div
+            ref={chatRef}
+            className="overflow-y-scroll div-contenct-chat scrollbar"
+          >
             <ul className="flex flex-col gap-2">
               {msgsRoom.map((msg) => (
                 <>
@@ -203,6 +234,16 @@ function Room() {
       <ToastContainer />
     </>
   );
+  function filtrarBusca() {
+    const valorInputMinusculo =
+      valueInputRef.current?.value.toLowerCase() || "";
+    setInputValue(valueInputRef.current?.value || "");
+    const newArray = ArrayRooms.filter((room: ROOMS) => {
+      const title = room.title.toLowerCase();
+      return title.includes(valorInputMinusculo);
+    });
+    setArrayRoomsSearch(newArray);
+  }
 }
 
 export default Room;

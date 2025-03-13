@@ -6,7 +6,7 @@ const ButtonLogout = () => {
     <>
       <button
         onClick={logout}
-        className="fixed flex flex-row items-center justify-center gap-1 cursor-pointer top-3 left-3"
+        className="fixed z-50 flex flex-row items-center justify-center gap-1 cursor-pointer top-3 left-3"
       >
         <LogOut className="rotate-180 text-slate-50" />
         <p className="text-slate-50">Sair</p>
