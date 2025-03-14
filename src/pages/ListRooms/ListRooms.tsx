@@ -1,20 +1,20 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSocket } from "../../contexts/WebSocketContext.js";
+import { ROOM, useSocket } from "../../contexts/WebSocketContext.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import ButtonLogout from "../../components/buttonRetunrLastPage/ButtonLogout.js";
 import { io } from "socket.io-client";
-import { ROOMS } from "../../contexts/WebSocketContext.js";
+
 import Footer from "../../components/footer/Footer.js";
 import "./ListRoomsStyle.css";
+
 const ListRooms = () => {
   const { ArrayRooms, setSocket, socket } = useSocket();
   const navigate = useNavigate();
   const location = useLocation();
   const toastFy = location.state || {};
-
-  const joinRomm = (e: React.MouseEvent<HTMLButtonElement>, room: ROOMS) => {
+  const joinRomm = (e: React.MouseEvent<HTMLButtonElement>, room: ROOM) => {
     e.preventDefault();
     navigate(`/room/${room.title}`);
   };
@@ -30,13 +30,10 @@ const ListRooms = () => {
     }
 
     if (!socket) {
-      const Newsocket = io(
-        "https://back-end-websocket-production.up.railway.app/",
-        {
-          transports: ["websocket"],
-          reconnectionAttempts: 0,
-        }
-      );
+      const Newsocket = io("http://localhost:3000", {
+        transports: ["websocket"],
+        reconnectionAttempts: 0,
+      });
       setSocket(Newsocket);
     }
   }, []);
@@ -48,7 +45,7 @@ const ListRooms = () => {
           Salas Disponíveis
         </h5>
         <div className="bottom-0 flex flex-row flex-wrap justify-center gap-4 ">
-          {ArrayRooms.map((room: ROOMS, i: number) => {
+          {ArrayRooms.map((room: ROOM, i: number) => {
             return (
               <div key={i} className="div-card bg-slate-950">
                 <h5 className="text-2xl text-center text-slate-50">

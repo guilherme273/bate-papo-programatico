@@ -10,8 +10,15 @@ interface SocketProviderProps {
   children: ReactNode;
 }
 
-export interface ROOMS {
+export interface USERS_ON {
+  id: string;
+  nickname: string;
+}
+
+export interface ROOM {
   title: string;
+  msg: { content: string; remetente: string; avatar: string; id: string }[];
+  usersOnline: { id: string; nickname: string }[];
   urlIMG: string;
 }
 
@@ -22,6 +29,23 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [avatar, setAvatar] = useState<string | null>(null);
   const [logado, setLogado] = useState<boolean>(false);
   const [socket, setSocket] = useState<any>(null);
+  const [UsersOnline, SetUsersOnline] = useState<USERS_ON[]>([]);
+  const [ArrayRooms, setArrayRooms] = useState<ROOM[]>([]);
+
+  useEffect(() => {
+    const AsyncForthis = async () => {
+      const response = await fetch("http://localhost:3000/rooms", {
+        method: "GET",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setArrayRooms(data);
+      }
+    };
+
+    AsyncForthis();
+  }, []);
 
   const logar = (data: { nickName: string; avatar: string }) => {
     if (data.nickName && data.avatar) {
@@ -59,17 +83,32 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log(NickName, avatar, logado);
-  }, [logado]);
+    if (socket) {
+      socket.emit("updateTotalUsersOn", NickName);
+      socket.on("updateTotalUsersOn", (arrayUsersOn: USERS_ON[]) => {
+        SetUsersOnline((prev: USERS_ON[]) => {
+          const mergedUsers = [...prev, ...arrayUsersOn];
 
-  const ArrayRooms: ROOMS[] = [
-    { title: "Falando de Java", urlIMG: "/img/java.jpg" },
-    { title: "Discussão Sobre Ia", urlIMG: "/img/java.jpg" },
-    { title: "Procuro Por Um Freela", urlIMG: "/img/java.jpg" },
-    { title: "NodeJS", urlIMG: "/img/java.jpg" },
-    { title: "Type Script", urlIMG: "/img/java.jpg" },
-    { title: "Bugs e soluções", urlIMG: "/img/java.jpg" },
-  ];
+          // Removendo duplicatas pelo 'id'
+          const uniqueUsers = mergedUsers.filter(
+            (user, index, self) =>
+              self.findIndex((u) => u.id === user.id) === index
+          );
+
+          return uniqueUsers;
+        });
+      });
+
+      socket.on("Userdisconnecting", (allUsersOnline: USERS_ON[]) => {
+        SetUsersOnline(allUsersOnline);
+      });
+    }
+    return;
+  }, [socket]);
+
+  useEffect(() => {
+    console.log(ArrayRooms);
+  }, [ArrayRooms]);
 
   return (
     <WebSocketContext.Provider
@@ -83,6 +122,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         ArrayRooms,
         setSocket,
         logout,
+        SetUsersOnline,
+        setArrayRooms,
+        UsersOnline,
       }}
     >
       {children}

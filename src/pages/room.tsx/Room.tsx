@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AlignJustify, ArrowLeft, SendHorizontal } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ROOMS, useSocket } from "../../contexts/WebSocketContext.js";
+import { ROOM, useSocket } from "../../contexts/WebSocketContext.js";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import "./RoomStyle.css";
@@ -18,7 +18,7 @@ interface FormData {
 
 function Room() {
   const navigate = useNavigate();
-  const { socket, avatar, NickName, ArrayRooms } = useSocket();
+  const { socket, avatar, NickName, ArrayRooms, setArrayRooms } = useSocket();
   const { RoomName } = useParams();
   const [stateRoomName, setStateRoomName] = useState(RoomName);
   const [msgsRoom, setMsgsRoom] = useState<MSGS[]>([]);
@@ -27,7 +27,7 @@ function Room() {
   const valueInputRef = useRef<HTMLInputElement>(null);
   const [ArrayRoomsSearch, setArrayRoomsSearch] = useState(ArrayRooms);
   const [inputValue, setInputValue] = useState("");
-  const Room = ArrayRooms.filter((room: ROOMS) => room.title === RoomName);
+  const Room = ArrayRooms.filter((room: ROOM) => room.title === RoomName);
   const chatRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -37,6 +37,9 @@ function Room() {
   }, [msgsRoom]);
   const atualizarMSGS = (msgsRoom: MSGS[]) => {
     setMsgsRoom(msgsRoom);
+  };
+  const updateArray = (rooms: ROOM[]) => {
+    setArrayRooms(rooms);
   };
 
   const verificaOndeFoi = (e: React.MouseEvent) => {
@@ -76,7 +79,9 @@ function Room() {
 
     socket.emit("joinRoom", RoomName, NickName);
     socket.on("joinRoom", atualizarMSGS);
+    socket.on("joinRoomUpadeArray", updateArray);
     socket.on("leaveRoom", atualizarMSGS);
+    socket.on("leaveRoomUpadeArray", updateArray);
 
     // Adicionar ouvintes para eventos
     socket.on("message", messageListener);
@@ -89,7 +94,7 @@ function Room() {
     };
   }, [RoomName]);
 
-  const navegar = (e: React.MouseEvent<HTMLButtonElement>, room: ROOMS) => {
+  const navegar = (e: React.MouseEvent<HTMLButtonElement>, room: ROOM) => {
     e.preventDefault();
     navigate(`/room/${room.title}`);
   };
@@ -141,7 +146,7 @@ function Room() {
             />
           </div>
           <div className="div-rooms-list">
-            {ArrayRoomsSearch.map((room: ROOMS, i: number) => (
+            {ArrayRoomsSearch.map((room: ROOM, i: number) => (
               <button className="" onClick={(e) => navegar(e, room)} key={i}>
                 <div className="div-room hover:cursor-pointer hover:bg-gray-900">
                   <div
@@ -238,7 +243,7 @@ function Room() {
     const valorInputMinusculo =
       valueInputRef.current?.value.toLowerCase() || "";
     setInputValue(valueInputRef.current?.value || "");
-    const newArray = ArrayRooms.filter((room: ROOMS) => {
+    const newArray = ArrayRooms.filter((room: ROOM) => {
       const title = room.title.toLowerCase();
       return title.includes(valorInputMinusculo);
     });

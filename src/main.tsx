@@ -8,6 +8,7 @@ import { SocketProvider } from "./contexts/WebSocketContext.js";
 import ListRooms from "./pages/ListRooms/ListRooms.tsx";
 import Room from "./pages/room.tsx/Room.tsx";
 import { IsLogaded } from "./PrivatesRoutes/isLogaded.tsx";
+import Admin from "./pages/Admin/Admin.tsx";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
         element: <Room />,
       },
     ],
+  },
+  {
+    path: "/Admin",
+    element: <Admin />,
   },
 ]);
 

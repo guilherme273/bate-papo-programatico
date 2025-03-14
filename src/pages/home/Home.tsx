@@ -80,8 +80,9 @@ const Home = () => {
                     className="w-full p-1 text-sm text-white bg-gray-800 border border-gray-600 rounded-md outline-none focus:ring-2 focus:ring-blue-500"
                     id="emoji-select"
                     {...register("avatar", { required: true })}
+                    defaultValue="" // Isso define o valor inicial selecionado
                   >
-                    <option value="" disabled selected></option>
+                    <option value="" disabled></option>
                     {emojiList.map((emoji, index) => {
                       return (
                         <option key={index} value={emoji}>
@@ -90,6 +91,7 @@ const Home = () => {
                       );
                     })}
                   </select>
+
                   {errors?.avatar?.type === "required" && (
                     <p className="text-[11px] text-red-600/90">
                       Avatar Obrigatório
