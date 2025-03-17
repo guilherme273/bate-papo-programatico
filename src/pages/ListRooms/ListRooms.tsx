@@ -30,10 +30,13 @@ const ListRooms = () => {
     }
 
     if (!socket) {
-      const Newsocket = io("http://localhost:3000", {
-        transports: ["websocket"],
-        reconnectionAttempts: 0,
-      });
+      const Newsocket = io(
+        "https://back-end-websocket-production.up.railway.app/",
+        {
+          transports: ["websocket"],
+          reconnectionAttempts: 0,
+        }
+      );
       setSocket(Newsocket);
     }
   }, []);

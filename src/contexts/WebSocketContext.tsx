@@ -43,9 +43,12 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const AsyncForthis = async () => {
-      const response = await fetch("http://localhost:3000/rooms", {
-        method: "GET",
-      });
+      const response = await fetch(
+        "https://back-end-websocket-production.up.railway.app/rooms",
+        {
+          method: "GET",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
