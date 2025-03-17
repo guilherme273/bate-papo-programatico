@@ -9,7 +9,10 @@ import {
 interface SocketProviderProps {
   children: ReactNode;
 }
-
+export interface ChartsInterface {
+  name: string;
+  value: number;
+}
 export interface USERS_ON {
   id: string;
   nickname: string;
@@ -31,6 +34,12 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<any>(null);
   const [UsersOnline, SetUsersOnline] = useState<USERS_ON[]>([]);
   const [ArrayRooms, setArrayRooms] = useState<ROOM[]>([]);
+  const [array_utm_source, setarray_utm_source] = useState<ChartsInterface[]>(
+    ArrayRooms.map((room) => ({
+      name: room.title,
+      value: room.usersOnline.length,
+    }))
+  );
 
   useEffect(() => {
     const AsyncForthis = async () => {
@@ -107,7 +116,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, [socket]);
 
   useEffect(() => {
-    console.log(ArrayRooms);
+    const utm_source: ChartsInterface[] = ArrayRooms.map((room) => ({
+      name: room.title,
+      value: room.usersOnline.length,
+    }));
+    setarray_utm_source(utm_source);
   }, [ArrayRooms]);
 
   return (
@@ -125,6 +138,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         SetUsersOnline,
         setArrayRooms,
         UsersOnline,
+        array_utm_source,
       }}
     >
       {children}

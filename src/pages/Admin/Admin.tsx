@@ -8,11 +8,6 @@ import CategoryDistributionChart from "../../components/overview/CategoryDistrib
 import UsersTable from "../../components/users/UsersTable";
 import { useSocket } from "../../contexts/WebSocketContext";
 
-export interface Charts {
-  name: string;
-  value: number;
-}
-
 interface TableData {
   id: number;
   email: string;
@@ -57,16 +52,9 @@ const x = [
   },
 ];
 
-const array_utm_source: Charts[] = [
-  { name: "Campaign", value: 1 },
-  { name: "Promo", value: 1 },
-  { name: "Marketing", value: 1 },
-  { name: "Tech Case", value: 1 },
-  { name: "Newsletter", value: 1 },
-];
-
 const Admin = () => {
-  const { ArrayRooms } = useSocket();
+  const { ArrayRooms, UsersOnline, array_utm_source } = useSocket();
+
   return (
     <>
       <section className="bg-gray-800 section-admin">
@@ -84,7 +72,7 @@ const Admin = () => {
               <StatCard
                 name="Total De Noticias Abertas"
                 icon={Zap}
-                value={35}
+                value={1}
                 color="#6366F1"
               />
               <StatCard

@@ -32,6 +32,19 @@ const Home = () => {
   useEffect(() => {
     isLogaded();
   });
+  function getWelcome() {
+    const hora = new Date().getHours();
+
+    if (hora >= 3 && hora < 12) {
+      return "Bom dia";
+    } else if (hora >= 12 && hora < 18) {
+      return "Boa tarde";
+    } else {
+      return "Boa noite";
+    }
+  }
+
+  console.log(getWelcome());
 
   if (logado) {
     return (
@@ -57,6 +70,9 @@ const Home = () => {
                 onSubmit={handleSubmit(submit)}
                 className="bottom-0 flex flex-col items-center justify-around w-2/3 h-1/1 bg-slate-700/90 rounded-2xl"
               >
+                <h2 className="text-4xl text-center text-zinc-50">
+                  {getWelcome()}
+                </h2>
                 <div className="flex flex-col justify-center items-baseline w-[70%] gap-1">
                   <label className=" text-slate-50" htmlFor="">
                     Entre Com Um Apelido
