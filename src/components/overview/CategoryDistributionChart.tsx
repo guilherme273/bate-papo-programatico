@@ -8,14 +8,14 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { Charts } from "../../pages/Admin/Admin";
 import React from "react";
+import { ChartsInterface } from "../../contexts/WebSocketContext";
 
 const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"];
 
 interface Props {
   title: string;
-  categoryData: Charts[];
+  categoryData: ChartsInterface[];
 }
 
 const CategoryDistributionChart: React.FC<Props> = ({

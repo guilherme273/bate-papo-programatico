@@ -17,7 +17,7 @@ interface TableData {
   last_read: string;
 }
 
-const x = [
+const x: TableData[] = [
   {
     id: 2,
     email: "sa",
@@ -53,7 +53,7 @@ const x = [
 ];
 
 const Admin = () => {
-  const { ArrayRooms, UsersOnline, array_utm_source } = useSocket();
+  const { array_utm_source } = useSocket();
 
   return (
     <>
